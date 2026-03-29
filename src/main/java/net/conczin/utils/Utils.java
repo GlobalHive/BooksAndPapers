@@ -2,18 +2,25 @@ package net.conczin.utils;
 
 import com.hypixel.hytale.codec.builder.BuilderCodec;
 import com.hypixel.hytale.component.Ref;
+import com.hypixel.hytale.component.Store;
+import com.hypixel.hytale.math.util.ChunkUtil;
 import com.hypixel.hytale.protocol.BlockPosition;
 import com.hypixel.hytale.protocol.InteractionType;
 import com.hypixel.hytale.server.core.entity.UUIDComponent;
 import com.hypixel.hytale.server.core.entity.entities.Player;
 import com.hypixel.hytale.server.core.inventory.Inventory;
 import com.hypixel.hytale.server.core.inventory.ItemStack;
+import com.hypixel.hytale.server.core.modules.block.components.ItemContainerBlock;
 import com.hypixel.hytale.server.core.modules.interaction.interaction.config.Interaction;
 import com.hypixel.hytale.server.core.modules.interaction.interaction.config.RootInteraction;
 import com.hypixel.hytale.server.core.modules.interaction.interaction.config.server.OpenCustomUIInteraction;
 import com.hypixel.hytale.server.core.universe.world.World;
-import com.hypixel.hytale.server.core.universe.world.meta.state.ItemContainerState;
+import com.hypixel.hytale.server.core.universe.world.chunk.BlockChunk;
+import com.hypixel.hytale.server.core.universe.world.chunk.BlockComponentChunk;
+import com.hypixel.hytale.server.core.universe.world.chunk.section.BlockSection;
+import com.hypixel.hytale.server.core.universe.world.storage.ChunkStore;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
+import com.hypixel.hytale.server.core.util.FillerBlockUtil;
 import net.conczin.gui.BookUISupplier;
 
 import java.lang.reflect.Field;
@@ -39,7 +46,7 @@ public class Utils {
             ItemStack stack = getItemFromContainer(world, block, 0);
             if (stack != null) {
                 ItemStack newStack = stack.withMetadata(field, codec, data);
-                ItemContainerState inventory = getInventory(world, block);
+                ItemContainerBlock inventory = getInventory(world, block);
                 if (inventory != null) {
                     inventory.getItemContainer().setItemStackForSlot((short) 0, newStack);
                 }
@@ -80,16 +87,46 @@ public class Utils {
         }
     }
 
-    public static ItemContainerState getInventory(World world, BlockPosition targetBlock) {
-        // noinspection deprecation
-        if (world.getState(targetBlock.x, targetBlock.y, targetBlock.z, true) instanceof ItemContainerState itemcontainerstate) {
-            return itemcontainerstate;
+    public static ItemContainerBlock getInventory(World world, BlockPosition targetBlock) {
+        int x = targetBlock.x;
+        int y = targetBlock.y;
+        int z = targetBlock.z;
+
+        ChunkStore chunkStore = world.getChunkStore();
+        Ref<ChunkStore> chunkRef = chunkStore.getChunkReference(ChunkUtil.indexChunkFromBlock(x, z));
+        if (chunkRef == null || !chunkRef.isValid()) {
+            return null;
         }
-        return null;
+
+        Store<ChunkStore> chunkStoreData = chunkStore.getStore();
+        BlockChunk blockChunk = chunkStoreData.getComponent(chunkRef, BlockChunk.getComponentType());
+        BlockComponentChunk blockComponentChunk = chunkStoreData.getComponent(chunkRef, BlockComponentChunk.getComponentType());
+        if (blockChunk == null || blockComponentChunk == null) {
+            return null;
+        }
+
+        BlockSection section = blockChunk.getSectionAtBlockY(y);
+        if (section == null) {
+            return null;
+        }
+
+        int filler = section.getFiller(x, y, z);
+        if (filler != 0) {
+            x -= FillerBlockUtil.unpackX(filler);
+            y -= FillerBlockUtil.unpackY(filler);
+            z -= FillerBlockUtil.unpackZ(filler);
+        }
+
+        Ref<ChunkStore> blockRef = blockComponentChunk.getEntityReference(ChunkUtil.indexBlockInColumn(x, y, z));
+        if (blockRef == null) {
+            return null;
+        }
+
+        return chunkStoreData.getComponent(blockRef, ItemContainerBlock.getComponentType());
     }
 
     public static ItemStack getItemFromContainer(World world, BlockPosition targetBlock, int slot) {
-        ItemContainerState inventory = getInventory(world, targetBlock);
+        ItemContainerBlock inventory = getInventory(world, targetBlock);
         if (inventory != null) {
             return inventory.getItemContainer().getItemStack((short) slot);
         }

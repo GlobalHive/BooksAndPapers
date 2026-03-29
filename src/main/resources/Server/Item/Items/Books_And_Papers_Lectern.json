@@ -50,8 +50,6 @@
     "VariantRotation": "NESW",
     "ParticleColor": "#8B4513",
     "State": {
-      "Id": "container",
-      "Capacity": 1,
       "Definitions": {
         "CloseWindow": {
           "InteractionSoundEventId": "SFX_Chest_Wooden_Close"
@@ -61,8 +59,14 @@
         }
       }
     },
+    "BlockEntity": {
+      "Components": {
+        "ItemContainerBlock": {
+          "Capacity": 1
+        }
+      }
+    },
     "Interactions": {
-      "Primary": "Break_Container",
       "Use": {
         "Interactions": [
           {
