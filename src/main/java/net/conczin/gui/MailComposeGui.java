@@ -5,7 +5,7 @@ import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.Store;
 import com.hypixel.hytale.protocol.packets.interface_.CustomPageLifetime;
 import com.hypixel.hytale.protocol.packets.interface_.CustomUIEventBindingType;
-import com.hypixel.hytale.server.core.inventory.Inventory;
+import com.hypixel.hytale.server.core.inventory.InventoryComponent;
 import com.hypixel.hytale.server.core.inventory.ItemStack;
 import com.hypixel.hytale.server.core.ui.DropdownEntryInfo;
 import com.hypixel.hytale.server.core.ui.LocalizableString;
@@ -64,11 +64,13 @@ public class MailComposeGui extends CodecDataInteractiveUIPage<MailComposeGui.Da
 
         if ("Send".equals(data.action)) {
             if (data.recipient != null) {
-                Inventory inventory = Utils.getInventory(ref);
-                ItemStack itemInHand = inventory.getActiveHotbarItem();
+                InventoryComponent.Hotbar hotbar = Utils.getHotbar(ref);
+                ItemStack itemInHand = hotbar != null ? hotbar.getActiveItem() : null;
                 MailboxResource mailboxResource = ref.getStore().getResource(MailboxResource.getResourceType());
                 mailboxResource.push(UUID.fromString(data.recipient), itemInHand);
-                inventory.getHotbar().replaceItemStackInSlot(inventory.getActiveHotbarSlot(), itemInHand, ItemStack.EMPTY);
+                if (hotbar != null && itemInHand != null) {
+                    hotbar.getInventory().replaceItemStackInSlot(hotbar.getActiveSlot(), itemInHand, ItemStack.EMPTY);
+                }
             }
             close();
         }

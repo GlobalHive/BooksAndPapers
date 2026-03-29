@@ -10,6 +10,7 @@ import com.hypixel.hytale.server.core.Message;
 import com.hypixel.hytale.server.core.asset.type.soundevent.config.SoundEvent;
 import com.hypixel.hytale.server.core.entity.InteractionContext;
 import com.hypixel.hytale.server.core.entity.entities.Player;
+import com.hypixel.hytale.server.core.inventory.InventoryComponent;
 import com.hypixel.hytale.server.core.inventory.ItemStack;
 import com.hypixel.hytale.server.core.inventory.container.SimpleItemContainer;
 import com.hypixel.hytale.server.core.modules.interaction.interaction.CooldownHandler;
@@ -65,7 +66,7 @@ public class MailboxInteraction extends SimpleBlockInteraction {
                 if (mailbox.hasMail()) {
                     ItemStack pop = mailbox.pop();
                     if (pop != null) {
-                        SimpleItemContainer.addOrDropItemStacks(store, ref, player.getInventory().getCombinedHotbarFirst(), List.of(pop));
+                        SimpleItemContainer.addOrDropItemStacks(store, ref, InventoryComponent.getCombined(store, ref, InventoryComponent.HOTBAR_FIRST), List.of(pop));
                         playSound(commandBuffer, targetBlock, ref, "SFX_Books_And_Papers_Mailbox_Receive");
                     }
                 } else {

@@ -11,6 +11,7 @@ import com.hypixel.hytale.server.core.Message;
 import com.hypixel.hytale.server.core.asset.type.soundevent.config.SoundEvent;
 import com.hypixel.hytale.server.core.entity.InteractionContext;
 import com.hypixel.hytale.server.core.entity.entities.Player;
+import com.hypixel.hytale.server.core.inventory.InventoryComponent;
 import com.hypixel.hytale.server.core.entity.entities.player.pages.CustomUIPage;
 import com.hypixel.hytale.server.core.entity.entities.player.pages.PageManager;
 import com.hypixel.hytale.server.core.inventory.ItemStack;
@@ -88,11 +89,13 @@ public class LecternInteraction extends SimpleBlockInteraction {
         } else {
             if (bookInLectern == null) {
                 // Place book in the lectern
-                byte activeHotbarSlot = player.getInventory().getActiveHotbarSlot();
+                InventoryComponent.Hotbar hotbar = Utils.getHotbar(ref);
+                if (hotbar == null) return;
+                byte activeHotbarSlot = hotbar.getActiveSlot();
                 ItemContainerBlock inventoryState = Utils.getInventory(world, targetBlock);
                 if (inventoryState == null) return;
                 ItemContainer inventory = inventoryState.getItemContainer();
-                if (inventory != null && player.getInventory().getHotbar().moveItemStackFromSlot(activeHotbarSlot, inventory).succeeded()) {
+                if (inventory != null && hotbar.getInventory().moveItemStackFromSlot(activeHotbarSlot, inventory).succeeded()) {
                     playSound(commandBuffer, targetPosition, ref, "SFX_Books_And_Papers_Place");
                 }
             } else {

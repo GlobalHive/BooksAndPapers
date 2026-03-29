@@ -7,8 +7,7 @@ import com.hypixel.hytale.math.util.ChunkUtil;
 import com.hypixel.hytale.protocol.BlockPosition;
 import com.hypixel.hytale.protocol.InteractionType;
 import com.hypixel.hytale.server.core.entity.UUIDComponent;
-import com.hypixel.hytale.server.core.entity.entities.Player;
-import com.hypixel.hytale.server.core.inventory.Inventory;
+import com.hypixel.hytale.server.core.inventory.InventoryComponent;
 import com.hypixel.hytale.server.core.inventory.ItemStack;
 import com.hypixel.hytale.server.core.modules.block.components.ItemContainerBlock;
 import com.hypixel.hytale.server.core.modules.interaction.interaction.config.Interaction;
@@ -35,11 +34,11 @@ public class Utils {
 
     public static <T> void setData(Ref<EntityStore> ref, BlockPosition block, String field, BuilderCodec<T> codec, T data) {
         if (block == null) {
-            Inventory inventory = getInventory(ref);
-            ItemStack itemInHand = inventory.getActiveHotbarItem();
-            if (itemInHand != null) {
+            InventoryComponent.Hotbar hotbar = getHotbar(ref);
+            ItemStack itemInHand = hotbar != null ? hotbar.getActiveItem() : null;
+            if (hotbar != null && itemInHand != null) {
                 ItemStack newItemInHand = itemInHand.withMetadata(field, codec, data);
-                inventory.getHotbar().replaceItemStackInSlot(inventory.getActiveHotbarSlot(), itemInHand, newItemInHand);
+                hotbar.getInventory().replaceItemStackInSlot(hotbar.getActiveSlot(), itemInHand, newItemInHand);
             }
         } else {
             World world = ref.getStore().getExternalData().getWorld();
@@ -57,8 +56,8 @@ public class Utils {
     public static <T> T getData(Ref<EntityStore> ref, BlockPosition block, String field, BuilderCodec<T> codec) {
         ItemStack stack;
         if (block == null) {
-            Inventory inventory = getInventory(ref);
-            stack = inventory.getActiveHotbarItem();
+            InventoryComponent.Hotbar hotbar = getHotbar(ref);
+            stack = hotbar != null ? hotbar.getActiveItem() : null;
         } else {
             World world = ref.getStore().getExternalData().getWorld();
             stack = getItemFromContainer(world, block, 0);
@@ -69,10 +68,8 @@ public class Utils {
         return codec.getDefaultValue();
     }
 
-    public static Inventory getInventory(Ref<EntityStore> ref) {
-        Player player = ref.getStore().getComponent(ref, Player.getComponentType());
-        assert player != null;
-        return player.getInventory();
+    public static InventoryComponent.Hotbar getHotbar(Ref<EntityStore> ref) {
+        return ref.getStore().getComponent(ref, InventoryComponent.Hotbar.getComponentType());
     }
 
 
