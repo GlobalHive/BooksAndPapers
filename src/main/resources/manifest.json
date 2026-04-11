@@ -1,18 +1,23 @@
 {
   "Group": "Conczin",
   "Name": "Books and Papers",
-  "Version": "0.0.1",
+  "Version": "1.2.0",
   "Description": "Various writable books, a mail system, and hidden lore across the world.",
   "Authors": [
     {
       "Name": "Conczin",
       "Email": "conczin@gmail.com",
       "Url": "https://conczin.net/"
+    },
+    {
+      "Name": "GlobalHive",
+      "Email": "support@globalhive.ch",
+      "Url": "https://globalhive.ch/"
     }
   ],
   "Website": "https://conczin.net/",
   "Main": "net.conczin.BooksAndPapers",
-  "ServerVersion": "2026.02.17-255364b8e",
+  "ServerVersion": "2026.03.26-89796e57b",
   "Dependencies": {},
   "OptionalDependencies": {},
   "DisabledByDefault": false,
