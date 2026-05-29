@@ -16,7 +16,7 @@ interactions.booksAndPapers.lectern.copy_fail = Make sure the book in your hand 
 interactions.booksAndPapers.lectern.copy_success = You have copied the book from the lectern.
 
 interactionHints.booksAndPapers.collectMail = "Press [{key}] to collect mail or send a letter in your hand."
-interactionHints.booksAndPapers.lectern = "Press [{key}] to read, crouch to open inventory."
+interactionHints.booksAndPapers.lectern = "Press [{key}] to read"
 
 customUI.booksAndPapers.previous = Previous Page
 customUI.booksAndPapers.next = Next Page
