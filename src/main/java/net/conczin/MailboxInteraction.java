@@ -72,7 +72,7 @@ public class MailboxInteraction extends SimpleBlockInteraction {
                         playSound(commandBuffer, targetBlock, ref, "SFX_Books_And_Papers_Mailbox_Receive");
                     }
                 } else {
-                    //player.sendMessage(Message.translation("server.interactions.booksAndPapers.mailbox.empty"));
+                    playerref.sendMessage(Message.translation("server.interactions.booksAndPapers.mailbox.empty"));
                     playSound(commandBuffer, targetBlock, ref, "SFX_Books_And_Papers_Mailbox_Empty");
                 }
             }

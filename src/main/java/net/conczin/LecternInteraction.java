@@ -85,7 +85,7 @@ public class LecternInteraction extends SimpleBlockInteraction {
                 playSound(commandBuffer, targetPosition, ref, "SFX_Books_And_Papers_Open");
             } else {
                 // The lectern is empty
-                //player.sendMessage(Message.translation("server.interactions.booksAndPapers.lectern.empty"));
+                playerref.sendMessage(Message.translation("server.interactions.booksAndPapers.lectern.empty"));
             }
         } else {
             if (bookInLectern == null) {
@@ -104,9 +104,9 @@ public class LecternInteraction extends SimpleBlockInteraction {
                 if (bookInHand.getOrCreatePage(0).content.isEmpty()) {
                     Utils.setData(ref, null, METADATA_KEY, BookData.CODEC, bookInLectern);
                     playSound(commandBuffer, targetPosition, ref, "SFX_Books_And_Papers_Open");
-                    //player.sendMessage(Message.translation("server.interactions.booksAndPapers.lectern.copy_success"));
+                    playerref.sendMessage(Message.translation("server.interactions.booksAndPapers.lectern.copy_success"));
                 } else {
-                    //player.sendMessage(Message.translation("server.interactions.booksAndPapers.lectern.copy_fail"));
+                    playerref.sendMessage(Message.translation("server.interactions.booksAndPapers.lectern.copy_fail"));
                 }
             }
         }
