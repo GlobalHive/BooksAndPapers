@@ -9,13 +9,13 @@ import com.hypixel.hytale.protocol.InteractionType;
 import com.hypixel.hytale.server.core.entity.UUIDComponent;
 import com.hypixel.hytale.server.core.inventory.InventoryComponent;
 import com.hypixel.hytale.server.core.inventory.ItemStack;
+import com.hypixel.hytale.server.core.modules.block.BlockModule;
 import com.hypixel.hytale.server.core.modules.block.components.ItemContainerBlock;
 import com.hypixel.hytale.server.core.modules.interaction.interaction.config.Interaction;
 import com.hypixel.hytale.server.core.modules.interaction.interaction.config.RootInteraction;
 import com.hypixel.hytale.server.core.modules.interaction.interaction.config.server.OpenCustomUIInteraction;
 import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.chunk.BlockChunk;
-import com.hypixel.hytale.server.core.universe.world.chunk.BlockComponentChunk;
 import com.hypixel.hytale.server.core.universe.world.chunk.section.BlockSection;
 import com.hypixel.hytale.server.core.universe.world.storage.ChunkStore;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
@@ -97,8 +97,7 @@ public class Utils {
 
         Store<ChunkStore> chunkStoreData = chunkStore.getStore();
         BlockChunk blockChunk = chunkStoreData.getComponent(chunkRef, BlockChunk.getComponentType());
-        BlockComponentChunk blockComponentChunk = chunkStoreData.getComponent(chunkRef, BlockComponentChunk.getComponentType());
-        if (blockChunk == null || blockComponentChunk == null) {
+        if (blockChunk == null) {
             return null;
         }
 
@@ -114,7 +113,7 @@ public class Utils {
             z -= FillerBlockUtil.unpackZ(filler);
         }
 
-        Ref<ChunkStore> blockRef = blockComponentChunk.getEntityReference(ChunkUtil.indexBlockInColumn(x, y, z));
+        Ref<ChunkStore> blockRef = BlockModule.getBlockEntity(world, targetBlock.x, targetBlock.y, targetBlock.z);
         if (blockRef == null) {
             return null;
         }
